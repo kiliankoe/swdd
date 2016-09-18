@@ -12,7 +12,7 @@ type Meal struct {
 	ImageURL string  `json:"imageURL"`
 	PageURL  string  `json:"detailURL"`
 	Canteen  string  `json:"canteen"`
-	Prices   *Prices `json:"prices"`
+	Prices   *Prices `json:"prices,omitempty"`
 }
 
 // A Prices object
@@ -49,15 +49,22 @@ func trimTitle(title string) string {
 func mealFromFeedItem(item item) Meal {
 	studentPrice, employeePrice := readPrices(item.Title)
 
+	var prices *Prices
+	if studentPrice == 0 && employeePrice == 0 {
+		prices = nil
+	} else {
+		prices = &Prices{
+			Student:  studentPrice,
+			Employee: employeePrice,
+		}
+	}
+
 	return Meal{
 		Name:     trimTitle(item.Title),
 		ImageURL: item.ImageURL,
 		PageURL:  item.Link,
 		Canteen:  item.Author,
-		Prices: &Prices{
-			Student:  studentPrice,
-			Employee: employeePrice,
-		},
+		Prices:   prices,
 	}
 }
 
