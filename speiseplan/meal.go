@@ -1,7 +1,6 @@
 package speiseplan
 
 import (
-	"fmt"
 	"regexp"
 	"strconv"
 )
@@ -69,5 +68,5 @@ func mealFromFeedItem(item item) Meal {
 }
 
 func (m Meal) String() string {
-	return fmt.Sprintf("%s - %0.2f€, %0.2f€", m.Name, m.Prices.Student, m.Prices.Employee)
+	return m.Name
 }
