@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"launchpad.net/xmlpath"
+	"gopkg.in/xmlpath.v2"
 )
 
 type item struct {
