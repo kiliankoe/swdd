@@ -1,5 +1,7 @@
 package speiseplan
 
+import "strings"
+
 // FeedURL is the URL of the Menu RSS Feed
 const FeedURL = "http://www.studentenwerk-dresden.de/feeds/speiseplan-ifsr.rss"
 
@@ -40,13 +42,50 @@ func GetCurrent() (meals []*Meal, err error) {
 	return meals, nil
 }
 
-// GetCurrentForCanteen returns all current meals for a given canteen
-func GetCurrentForCanteen(canteen string) (meals []*Meal, err error) {
+// GetCurrentForCanteen returns all current meals for a given canteen, the name
+// of which is also returned in case the user used a common alias.
+func GetCurrentForCanteen(canteen string) (meals []*Meal, canteenName string, err error) {
+	canteenName = commonAliases(canteen)
 	all, err := GetCurrent()
 	for _, meal := range all {
-		if meal.Canteen == canteen {
+		if strings.ToLower(meal.Canteen) == strings.ToLower(canteenName) {
 			meals = append(meals, meal)
 		}
 	}
 	return
+}
+
+func commonAliases(search string) string {
+	switch strings.ToLower(search) {
+	case "alte", "mensa", "mommsa", "brat2", "bratquadrat":
+		return AlteMensa
+	case "uboot", "bio", "biomensa":
+		return UBoot
+	case "brühl", "hfbk":
+		return Bruehl
+	case "görlitz":
+		return Goerlitz
+	case "jotown", "ba", "alte fakultät":
+		return Johannstadt
+	case "palucca", "tanz":
+		return PaluccaHochschule
+	case "reichenbach", "htw", "reiche", "club mensa":
+		return Reichenbachstrasse
+	case "siede", "siedepunkt", "drepunct", "drehpunkt", "siedepunct", "slub":
+		return Siedepunkt
+	case "stimmgabel", "hfm", "musik", "musikhochschule":
+		return StimmGabel
+	case "tharandt", "tellerrand":
+		return TellerRandt
+	case "wu", "wu1", "wundtstraße":
+		return WUEins
+	case "neue", "bruchbude":
+		return "Neue Mensa"
+	case "zelt", "zeltmensa", "schlösschen", "feldschlösschen":
+		return Zeltschloesschen
+	case "grill", "cube", "fresswürfel", "würfel", "burger", "grillcube":
+		return GrillCube
+	default:
+		return search
+	}
 }
